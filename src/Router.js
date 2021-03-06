@@ -4,6 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import Home from './screens/Home';
 import ImageView from './screens/ImageView';
+import Gallery from './screens/Gallery';
 
 const DashboardStack = createStackNavigator();
 
@@ -21,7 +22,20 @@ const MainScreen = () => {
         name="ImageView"
         component={ImageView}
         options={{
-          headerShown: false,
+          title: '',
+          headerStyle: {
+            elevation: 0,
+          },
+        }}
+      />
+      <DashboardStack.Screen
+        name="Gallery"
+        component={Gallery}
+        options={{
+          title: '',
+          headerStyle: {
+            elevation: 0,
+          },
         }}
       />
     </DashboardStack.Navigator>

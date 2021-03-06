@@ -1,71 +1,53 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Image,
   StyleSheet,
   Text,
   View,
-  crop,
   Pressable,
-  Dimensions,
-  NativeEventEmitter,
+  ActivityIndicator,
 } from 'react-native';
 import BarcodeMask from 'react-native-barcode-mask';
 import {RNCamera} from 'react-native-camera';
-import ImagePicker from 'react-native-image-crop-picker';
-import ImageEditor from '@react-native-community/image-editor';
-import {scale, WIDTH, HEIGHT} from '../styles/Dimension';
-
-const leftMargin = scale(210);
-const topMargin = scale(35);
-const frameWidth = scale(400);
-const frameHeight = scale(320);
-
-const scanAreaX = leftMargin / HEIGHT;
-const scanAreaY = topMargin / WIDTH;
-const scanAreaWidth = frameWidth / HEIGHT;
-const scanAreaHeight = frameHeight / WIDTH;
+import {
+  SCALE,
+  WIDTH,
+  HEIGHT,
+  FRAME_WIDTH,
+  FRAME_HEIGTH,
+  SCAN_AREA_X,
+  SCAN_AREA_Y,
+  SCAN_AREA_HEIGHT,
+  SCAN_AREA_WIDTH,
+} from '../styles/Dimension';
+import {useIsFocused} from '@react-navigation/core';
+import {COLORS} from '../styles/Colors';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Home = ({navigation}) => {
+  const isFocused = useIsFocused();
   const [camera, setCamera] = useState(null);
-  const [barcodes, setBarcodes] = useState([]);
-  const [scanBarcode, setScanBarcode] = useState(false);
+  const [flash, setFlash] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
-  const barcodeRecognized = (_barcodes) => {
-    // console.log('_barcodes', _barcodes);
-    setBarcodes(_barcodes);
-    console.log('barcodes', barcodes);
-    if (barcodes.type !== 'UNKNOWN_FORMAT') {
-      setScanBarcode(true);
+  const barcodeRecognized = async (_barcodes) => {
+    if (_barcodes.type !== 'UNKNOWN_FORMAT') {
+      setLoading(true);
       if (camera) {
-        const optionsImage = {base64: true};
-        camera.takePictureAsync(optionsImage).then((dataImage) => {
-          const cropData = {
-            offset: {
-              x: scanAreaX * dataImage.width - scale(10),
-              y: scanAreaY * dataImage.height - scale(10),
-            },
-            size: {
-              width: scanAreaWidth * dataImage.width - scale(10),
-              height: scanAreaHeight * dataImage.height - scale(10),
-            },
-          };
-          console.log('dataImage', dataImage);
-          ImageEditor.cropImage(dataImage.uri, cropData)
-            .then((dataCrop) => {
-              navigation.navigate('ImageView', {
-                uri: dataCrop,
-                width: frameHeight,
-                height: frameWidth,
-              });
-            })
-            .catch((e) => console.log('e', e));
-        });
+        try {
+          const optionsImage = {base64: true};
+          const captureImage = await camera.takePictureAsync(optionsImage);
+          navigation.navigate('ImageView', {
+            onView: false,
+            dataBarcode: _barcodes,
+            dataImage: captureImage,
+          });
+          setLoading(false);
+        } catch (e) {
+          console.log('e', e);
+          setLoading(false);
+        }
       }
     }
-  };
-
-  const btnAction = () => {
-    setScanBarcode((prev) => !prev);
   };
 
   return (
@@ -80,59 +62,96 @@ const Home = ({navigation}) => {
         }}
         autoFocus="on"
         rectOfInterest={{
-          x: scanAreaX,
-          y: scanAreaY,
-          width: scanAreaWidth,
-          height: scanAreaHeight,
+          x: SCAN_AREA_X,
+          y: SCAN_AREA_Y,
+          width: SCAN_AREA_WIDTH,
+          height: SCAN_AREA_HEIGHT,
         }}
         style={{flex: 1}}
         cameraViewDimensions={{
           width: WIDTH,
           height: HEIGHT,
         }}
+        flashMode={flash ? 'torch' : 'off'}
+        captureAudio={false}
         type={RNCamera.Constants.Type.back}
-        onFaceDetected={!navigation.isFocused() && null}
-        onBarCodeRead={!scanBarcode ? barcodeRecognized : null}
-        // androidCameraPermissionOptions={{
-        //   title: 'Permission to use camera',
-        //   message: 'We need your permission to use your camera',
-        //   buttonPositive: 'Ok',
-        //   buttonNegative: 'Cancel',
-        // }}
-        // androidRecordAudioPermissionOptions={{
-        //   title: 'Permission to use audio recording',
-        //   message: 'We need your permission to use your audio',
-        //   buttonPositive: 'Ok',
-        //   buttonNegative: 'Cancel',
-        // }}
-      >
-        <BarcodeMask
-          width={frameHeight}
-          height={frameWidth}
-          showAnimatedLine={false}
-          outerMaskOpacity={0.5}
-          edgeColor="#F48024"
-        />
+        onBarCodeRead={isFocused && !isLoading ? barcodeRecognized : null}>
+        {isLoading ? (
+          <>
+            <BarcodeMask
+              width={0}
+              height={0}
+              showAnimatedLine={false}
+              edgeBorderWidth={0}
+            />
+            <ActivityIndicator
+              style={{flex: 1, justifyContent: 'center'}}
+              animating={true}
+              size={SCALE(40)}
+              color={COLORS.white}
+            />
+          </>
+        ) : (
+          <>
+            <BarcodeMask
+              width={FRAME_HEIGTH}
+              height={FRAME_WIDTH}
+              showAnimatedLine={false}
+              outerMaskOpacity={0.5}
+              edgeColor={COLORS.white}
+              edgeBorderWidth={SCALE(2)}
+            />
+            <Text
+              style={{
+                position: 'absolute',
+                color: COLORS.white,
+                bottom: SCALE(170),
+                left: SCALE(105),
+                letterSpacing: 1,
+              }}>
+              Place the code inside the frame
+            </Text>
+            <Pressable
+              onPress={() => navigation.navigate('Gallery')}
+              style={{
+                position: 'absolute',
+                bottom: SCALE(30),
+                left: SCALE(180),
+              }}>
+              <Ionicons
+                name="ios-images-outline"
+                size={SCALE(24)}
+                color={COLORS.white}
+              />
+            </Pressable>
+            <Pressable
+              onPress={() => setFlash((prev) => !prev)}
+              style={{
+                position: 'absolute',
+                top: SCALE(30),
+                left: SCALE(25),
+              }}>
+              <Ionicons
+                name={flash ? 'ios-flash' : 'ios-flash-off'}
+                size={SCALE(20)}
+                color={COLORS.white}
+              />
+            </Pressable>
+            <Pressable
+              style={{
+                position: 'absolute',
+                top: SCALE(30),
+                right: SCALE(25),
+              }}>
+              <Ionicons
+                name="ios-settings-outline"
+                size={SCALE(20)}
+                color={COLORS.white}
+              />
+            </Pressable>
+          </>
+        )}
       </RNCamera>
-      <View
-        style={{
-          position: 'absolute',
-          alignItems: 'center',
-          width: WIDTH,
-          bottom: WIDTH / 10,
-        }}>
-        <Pressable
-          onPress={btnAction}
-          style={{
-            padding: WIDTH / 30,
-            borderRadius: WIDTH,
-            backgroundColor: !scanBarcode ? `#F48024` : `#0077CC`,
-          }}>
-          <Text style={{fontWeight: 'bold', fontSize: WIDTH / 20}}>
-            {!scanBarcode ? `Lagi Ngescan` : `Scan Lagi Dong`}
-          </Text>
-        </Pressable>
-      </View>
     </View>
   );
 };

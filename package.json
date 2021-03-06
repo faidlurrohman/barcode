@@ -10,6 +10,8 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-clipboard/clipboard": "^1.7.0",
+    "@react-native-community/cameraroll": "^4.0.2",
     "@react-native-community/image-editor": "^2.3.0",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-navigation/native": "^5.9.3",
@@ -19,10 +21,11 @@
     "react-native-barcode-mask": "^1.2.4",
     "react-native-camera": "^3.43.0",
     "react-native-gesture-handler": "^1.10.3",
-    "react-native-image-crop-picker": "^0.36.0",
     "react-native-reanimated": "^1.13.2",
     "react-native-safe-area-context": "^3.1.9",
-    "react-native-screens": "^2.18.1"
+    "react-native-screens": "^2.18.1",
+    "react-native-skeleton-placeholder": "^3.0.4",
+    "react-native-vector-icons": "^8.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.13.8",
