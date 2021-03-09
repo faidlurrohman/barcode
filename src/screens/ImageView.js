@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import ImageEditor from '@react-native-community/image-editor';
 import {
   Image,
-  StyleSheet,
   Text,
   View,
   Pressable,
@@ -18,11 +17,14 @@ import {
   SCAN_AREA_Y,
   SCAN_AREA_HEIGHT,
   SCAN_AREA_WIDTH,
+  WIDTH,
 } from '../styles/Dimension';
 import {COLORS} from '../styles/Colors';
 import Skeleton from 'react-native-skeleton-placeholder';
 import Clipboard from '@react-native-clipboard/clipboard';
 import CameraRoll from '@react-native-community/cameraroll';
+import LinearGradient from 'react-native-linear-gradient';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ImageView = ({route, navigation}) => {
   const {onView, dataBarcode, dataImage, onDelete} = route.params;
@@ -40,11 +42,13 @@ const ImageView = ({route, navigation}) => {
   };
 
   useEffect(() => {
-    console.log('route', route);
     setLoading(true);
     if (!onView) {
       cropImage();
     } else {
+      navigation.setOptions({
+        headerShown: false,
+      });
       setimageUri(dataImage);
       setLoading(false);
     }
@@ -111,11 +115,11 @@ const ImageView = ({route, navigation}) => {
         flex: 1,
         justifyContent: 'center',
         backgroundColor: COLORS.white,
-        paddingHorizontal: SCALE(20),
+        paddingHorizontal: onView ? 0 : SCALE(20),
       }}>
       {!onView ? (
         <View style={{flex: 0}}>
-          <Text style={{fontSize: SCALE(28)}}>Result</Text>
+          <Text style={{fontSize: SCALE(28), letterSpacing: 1}}>Result</Text>
         </View>
       ) : null}
       <View
@@ -123,7 +127,7 @@ const ImageView = ({route, navigation}) => {
           flex: !onView ? 0 : 1,
           justifyContent: 'center',
           alignItems: 'center',
-          paddingVertical: !onView ? SCALE(30) : SCALE(20),
+          paddingVertical: !onView ? SCALE(20) : 0,
         }}>
         {isLoading ? (
           <Skeleton>
@@ -148,13 +152,28 @@ const ImageView = ({route, navigation}) => {
       {!onView ? (
         <>
           <View style={{flex: 1}}>
-            <Text style={{fontSize: SCALE(16), color: COLORS.grey}}>
+            <Text
+              style={{
+                fontSize: SCALE(16),
+                color: COLORS.grey,
+                letterSpacing: 1,
+              }}>
               Barcode details :
             </Text>
-            <Text style={{fontSize: SCALE(18), color: COLORS.black}}>
+            <Text
+              style={{
+                fontSize: SCALE(18),
+                color: COLORS.black,
+                letterSpacing: 1,
+              }}>
               {dataBarcode.type}
             </Text>
-            <Text style={{fontSize: SCALE(18), color: COLORS.black}}>
+            <Text
+              style={{
+                fontSize: SCALE(18),
+                color: COLORS.black,
+                letterSpacing: 1,
+              }}>
               {dataBarcode.data}
             </Text>
           </View>
@@ -173,7 +192,12 @@ const ImageView = ({route, navigation}) => {
                 paddingVertical: SCALE(18),
                 borderRadius: SCALE(1000),
               }}>
-              <Text style={{fontSize: SCALE(16), color: COLORS.black}}>
+              <Text
+                style={{
+                  fontSize: SCALE(16),
+                  color: COLORS.black,
+                  letterSpacing: 1,
+                }}>
                 Copy Text
               </Text>
             </Pressable>
@@ -187,38 +211,59 @@ const ImageView = ({route, navigation}) => {
                 paddingVertical: SCALE(18),
                 borderRadius: SCALE(1000),
               }}>
-              <Text style={{fontSize: SCALE(16), color: COLORS.black}}>
+              <Text
+                style={{
+                  fontSize: SCALE(16),
+                  color: COLORS.black,
+                  letterSpacing: 1,
+                }}>
                 Save Image
               </Text>
             </Pressable>
           </View>
         </>
       ) : (
-        <View
+        <LinearGradient
+          start={{x: 0, y: 0}}
+          end={{x: 0, y: 1}}
+          colors={COLORS.gradient}
           style={{
-            flex: 0,
-            justifyContent: 'space-between',
-            paddingVertical: SCALE(15),
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            paddingVertical: SCALE(5),
+            width: WIDTH,
+            height: WIDTH / 2,
+            alignItems: 'center',
           }}>
+          <Pressable
+            onPress={() => navigation.goBack()}
+            style={{
+              position: 'absolute',
+              top: SCALE(30),
+              left: SCALE(2),
+              padding: SCALE(10),
+            }}>
+            <Ionicons name="arrow-back" size={SCALE(24)} color={COLORS.black} />
+          </Pressable>
           <Pressable
             onPress={deleteImage}
             style={{
-              backgroundColor: COLORS.gainsboro,
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingVertical: SCALE(18),
-              borderRadius: SCALE(1000),
+              position: 'absolute',
+              top: SCALE(30),
+              right: SCALE(2),
+              padding: SCALE(10),
             }}>
-            <Text style={{fontSize: SCALE(16), color: COLORS.black}}>
-              Delete Image
-            </Text>
+            <Ionicons
+              name="ios-trash-outline"
+              size={SCALE(24)}
+              color={COLORS.black}
+            />
           </Pressable>
-        </View>
+        </LinearGradient>
       )}
     </View>
   );
 };
 
 export default ImageView;
-
-const styles = StyleSheet.create({});

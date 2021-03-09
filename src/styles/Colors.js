@@ -4,6 +4,7 @@ const COLORS = {
   gainsboro: '#E8E8E8',
   white: '#ffffff',
   black: '#000000',
+  gradient: ['#ffffff', 'rgba(255,255,255,0)'],
 };
 
 export {COLORS};

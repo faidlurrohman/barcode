@@ -1,20 +1,23 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
-  StyleSheet,
-  Text,
   View,
   PermissionsAndroid,
   Platform,
   FlatList,
   Image,
   Pressable,
+  ActivityIndicator,
+  StatusBar,
+  Text,
 } from 'react-native';
 import {COLORS} from '../styles/Colors';
-import {SCALE, WIDTH} from '../styles/Dimension';
+import {HEIGHT, SCALE, WIDTH} from '../styles/Dimension';
 import CameraRoll from '@react-native-community/cameraroll';
 
-export default function Gallery({route, navigation}) {
+const Gallery = ({route, navigation}) => {
   const [allImages, setImages] = useState(null);
+  const [countImg, setCount] = useState(50);
+  const [nextPage, setPage] = useState(false);
 
   const getPermissions = async () => {
     const readPermission = PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
@@ -27,62 +30,62 @@ export default function Gallery({route, navigation}) {
   };
 
   const getPhotos = () => {
-    if (Platform.OS === 'android' && !getPermissions()) {
-      return;
+    if (Platform.OS === 'android' && !getPermissions()) return;
+    if (nextPage) {
+      setCount((prev) => prev + 50);
     }
 
     CameraRoll.getPhotos({
-      first: 1000,
+      first: countImg,
       assetType: 'Photos',
       groupTypes: 'Album',
-      groupName: 'Barcodes',
+      groupName: 'WhatsApp Images',
     }).then((res) => {
-      //   console.log('res', res);
+      console.log('res', res);
       setImages(res.edges);
+      setPage(res.page_info.has_next_page);
     });
   };
 
-  const ImagesView = () => {
-    return (
-      <FlatList
-        style={{
-          paddingHorizontal: SCALE(20),
-        }}
-        ItemSeparatorComponent={({}) => {
-          return <View style={{height: SCALE(3)}} />;
-        }}
-        horizontal={false}
-        data={allImages}
-        numColumns={2}
-        renderItem={renderImages}
-        keyExtractor={(item, index) => index}
-      />
-    );
-  };
-
-  const renderImages = ({item, index, separators}) => (
-    <Pressable
-      onPress={() =>
-        navigation.navigate('ImageView', {
-          onView: true,
-          dataBarcode: [],
-          dataImage: item.node.image.uri,
-          onDelete: getPhotos,
-        })
-      }>
-      <Image
+  const renderImages = useCallback(
+    ({item, index, separators}) => (
+      <Pressable
         key={index}
-        style={[
-          {
-            marginRight: index % 2 === 0 ? SCALE(1) : 0,
-            marginLeft: index % 2 === 1 ? SCALE(1) : 0,
-            width: WIDTH / 2.2,
-            height: WIDTH / 2.2,
-          },
-        ]}
-        source={{uri: item.node.image.uri}}
-      />
-    </Pressable>
+        onPress={() => {
+          navigation.navigate('ImageView', {
+            onView: true,
+            dataBarcode: [],
+            dataImage: item.node.image.uri,
+            onDelete: getPhotos,
+          });
+        }}>
+        <Image
+          style={{
+            marginRight: SCALE(1),
+            width: WIDTH / 3.4,
+            height: WIDTH / 3.4,
+          }}
+          source={{uri: item.node.image.uri}}
+        />
+      </Pressable>
+    ),
+    [],
+  );
+
+  const getItemLayout = useCallback(
+    (data, index) => ({
+      length: WIDTH / 3.4,
+      offset: (WIDTH / 3.4) * index,
+      index,
+    }),
+    [],
+  );
+
+  const keyImages = useCallback((item, index) => index, []);
+
+  const flatListSeparator = useCallback(
+    () => <View style={{height: SCALE(1)}} />,
+    [],
   );
 
   useEffect(() => {
@@ -95,12 +98,39 @@ export default function Gallery({route, navigation}) {
     <View
       style={{
         flex: 1,
-        justifyContent: 'center',
+        height: HEIGHT,
         backgroundColor: COLORS.white,
       }}>
-      <ImagesView />
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle="dark-content"
+      />
+      <View style={{flex: 0}}>
+        <Text
+          style={{
+            fontSize: SCALE(28),
+            letterSpacing: 1,
+            paddingBottom: SCALE(20),
+            paddingHorizontal: SCALE(20),
+          }}>
+          Images
+        </Text>
+      </View>
+      <FlatList
+        style={{paddingHorizontal: SCALE(20)}}
+        data={allImages}
+        renderItem={renderImages}
+        keyExtractor={keyImages}
+        horizontal={false}
+        numColumns={3}
+        ItemSeparatorComponent={flatListSeparator}
+        windowSize={11}
+        getItemLayout={getItemLayout}
+        onEndReachedThreshold={SCALE(20)}
+        onEndReached={getPhotos}
+      />
     </View>
   );
-}
-
-const styles = StyleSheet.create({});
+};
+export default Gallery;

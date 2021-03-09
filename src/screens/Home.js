@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
-  StyleSheet,
   Text,
   View,
   Pressable,
   ActivityIndicator,
+  StatusBar,
 } from 'react-native';
 import BarcodeMask from 'react-native-barcode-mask';
 import {RNCamera} from 'react-native-camera';
@@ -22,12 +22,16 @@ import {
 import {useIsFocused} from '@react-navigation/core';
 import {COLORS} from '../styles/Colors';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Home = ({navigation}) => {
   const isFocused = useIsFocused();
   const [camera, setCamera] = useState(null);
   const [flash, setFlash] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [barcodeTypes, setTypes] = useState([
+    RNCamera.Constants.BarCodeType.qr,
+  ]);
 
   const barcodeRecognized = async (_barcodes) => {
     if (_barcodes.type !== 'UNKNOWN_FORMAT') {
@@ -43,12 +47,34 @@ const Home = ({navigation}) => {
           });
           setLoading(false);
         } catch (e) {
-          console.log('e', e);
+          // console.log('e', e);
           setLoading(false);
         }
       }
     }
   };
+
+  const getSettings = useCallback(async () => {
+    try {
+      const types = await AsyncStorage.getItem('@barcodeTypes');
+      console.log('types', types);
+      if (!types) {
+        await AsyncStorage.setItem(
+          '@barcodeTypes',
+          JSON.stringify([RNCamera.Constants.BarCodeType.qr]),
+        );
+      }
+      return types ? setTypes(JSON.parse(types)) : null;
+    } catch (e) {
+      console.log('e', e);
+    }
+  }, []);
+
+  useEffect(() => {
+    getSettings();
+    // clearAll();
+    return () => {};
+  }, []);
 
   return (
     <View
@@ -56,6 +82,7 @@ const Home = ({navigation}) => {
         flex: 1,
         backgroundColor: 'black',
       }}>
+      <StatusBar translucent backgroundColor="transparent" />
       <RNCamera
         ref={(ref) => {
           setCamera(ref);
@@ -72,6 +99,7 @@ const Home = ({navigation}) => {
           width: WIDTH,
           height: HEIGHT,
         }}
+        barCodeTypes={barcodeTypes}
         flashMode={flash ? 'torch' : 'off'}
         captureAudio={false}
         type={RNCamera.Constants.Type.back}
@@ -116,7 +144,8 @@ const Home = ({navigation}) => {
               style={{
                 position: 'absolute',
                 bottom: SCALE(30),
-                left: SCALE(180),
+                left: SCALE(170),
+                padding: SCALE(10),
               }}>
               <Ionicons
                 name="ios-images-outline"
@@ -128,8 +157,9 @@ const Home = ({navigation}) => {
               onPress={() => setFlash((prev) => !prev)}
               style={{
                 position: 'absolute',
-                top: SCALE(30),
-                left: SCALE(25),
+                top: SCALE(70),
+                left: SCALE(20),
+                padding: SCALE(10),
               }}>
               <Ionicons
                 name={flash ? 'ios-flash' : 'ios-flash-off'}
@@ -138,10 +168,12 @@ const Home = ({navigation}) => {
               />
             </Pressable>
             <Pressable
+              onPress={() => navigation.navigate('Options')}
               style={{
                 position: 'absolute',
-                top: SCALE(30),
-                right: SCALE(25),
+                top: SCALE(70),
+                right: SCALE(20),
+                padding: SCALE(10),
               }}>
               <Ionicons
                 name="ios-settings-outline"
@@ -155,7 +187,4 @@ const Home = ({navigation}) => {
     </View>
   );
 };
-
 export default Home;
-
-const styles = StyleSheet.create({});
