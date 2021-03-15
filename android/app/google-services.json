@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "58456290367",
+    "project_id": "barcodes-24f2d",
+    "storage_bucket": "barcodes-24f2d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:58456290367:android:1dd748980e74b5e68df48a",
+        "android_client_info": {
+          "package_name": "com.barcode"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "58456290367-sv1557armv1imip9mr8jfeqpibj438e8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.barcode",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "58456290367-uj48u8pniq0v0mik547la9l3u2tk29rv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPelz1T1pDzwW_9H1BGhoycwR3V4sC580"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "58456290367-uj48u8pniq0v0mik547la9l3u2tk29rv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

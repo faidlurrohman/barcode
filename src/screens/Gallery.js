@@ -6,13 +6,13 @@ import {
   FlatList,
   Image,
   Pressable,
-  ActivityIndicator,
   StatusBar,
   Text,
 } from 'react-native';
 import {COLORS} from '../styles/Colors';
 import {HEIGHT, SCALE, WIDTH} from '../styles/Dimension';
 import CameraRoll from '@react-native-community/cameraroll';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Gallery = ({route, navigation}) => {
   const [allImages, setImages] = useState(null);
@@ -39,9 +39,8 @@ const Gallery = ({route, navigation}) => {
       first: countImg,
       assetType: 'Photos',
       groupTypes: 'Album',
-      groupName: 'WhatsApp Images',
+      groupName: 'Barcodes',
     }).then((res) => {
-      console.log('res', res);
       setImages(res.edges);
       setPage(res.page_info.has_next_page);
     });
@@ -88,6 +87,34 @@ const Gallery = ({route, navigation}) => {
     [],
   );
 
+  const emptyView = useCallback(
+    () => (
+      <View
+        style={{
+          paddingVertical: SCALE(70),
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <Ionicons
+          name="ios-file-tray-outline"
+          size={SCALE(40)}
+          color={COLORS.gainsboro}
+        />
+        <Text
+          style={{
+            fontSize: SCALE(16),
+            letterSpacing: 1,
+            paddingBottom: SCALE(20),
+            paddingHorizontal: SCALE(20),
+            color: COLORS.gainsboro,
+          }}>
+          No image
+        </Text>
+      </View>
+    ),
+    [],
+  );
+
   useEffect(() => {
     getPermissions();
     getPhotos();
@@ -120,6 +147,7 @@ const Gallery = ({route, navigation}) => {
       <FlatList
         style={{paddingHorizontal: SCALE(20)}}
         data={allImages}
+        ListEmptyComponent={emptyView}
         renderItem={renderImages}
         keyExtractor={keyImages}
         horizontal={false}

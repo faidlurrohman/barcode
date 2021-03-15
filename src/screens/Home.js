@@ -84,6 +84,7 @@ const Home = ({navigation}) => {
       }}>
       <StatusBar translucent backgroundColor="transparent" />
       <RNCamera
+        ratio="3:2"
         ref={(ref) => {
           setCamera(ref);
         }}
