@@ -79,11 +79,10 @@ const _getTypes = async () => {
 
 const _storeTypes = async (_values = null) => {
   try {
-    if (!_values) {
-      await AsyncStorage.setItem('@barcodeTypes', JSON.stringify(TYPES));
-    } else {
-      await AsyncStorage.setItem('@barcodeTypes', JSON.stringify(_values));
-    }
+    await AsyncStorage.setItem(
+      '@barcodeTypes',
+      JSON.stringify(!_values ? TYPES : _values),
+    );
   } catch (e) {
     console.log('e', e);
   }
