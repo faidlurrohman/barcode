@@ -22,16 +22,14 @@ import {
 import {useIsFocused} from '@react-navigation/core';
 import {COLORS} from '../styles/Colors';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {_getTypes, _storeTypes} from '../helper/_storage';
 
 const Home = ({navigation}) => {
   const isFocused = useIsFocused();
   const [camera, setCamera] = useState(null);
   const [flash, setFlash] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [barcodeTypes, setTypes] = useState([
-    RNCamera.Constants.BarCodeType.qr,
-  ]);
+  const [barcodeTypes, setTypes] = useState([]);
 
   const barcodeRecognized = async (_barcodes) => {
     if (_barcodes.type !== 'UNKNOWN_FORMAT') {
@@ -47,34 +45,35 @@ const Home = ({navigation}) => {
           });
           setLoading(false);
         } catch (e) {
-          // console.log('e', e);
           setLoading(false);
         }
       }
     }
   };
 
-  const getSettings = useCallback(async () => {
-    try {
-      const types = await AsyncStorage.getItem('@barcodeTypes');
-      console.log('types', types);
-      if (!types) {
-        await AsyncStorage.setItem(
-          '@barcodeTypes',
-          JSON.stringify([RNCamera.Constants.BarCodeType.qr]),
-        );
-      }
-      return types ? setTypes(JSON.parse(types)) : null;
-    } catch (e) {
-      console.log('e', e);
-    }
+  const getSettings = useCallback(() => {
+    _getTypes()
+      .then((el) => {
+        if (!el) {
+          _storeTypes();
+        } else {
+          const elTypes = JSON.parse(el);
+          setTypes([]);
+          elTypes.filter((e) => {
+            if (e.isActive) {
+              setTypes((prev) => [...prev, e.types]);
+            }
+          });
+        }
+      })
+      .catch((e) => console.log(`e`, e));
   }, []);
 
   useEffect(() => {
-    getSettings();
-    // clearAll();
-    return () => {};
-  }, []);
+    if (isFocused) {
+      getSettings();
+    }
+  }, [isFocused]);
 
   return (
     <View

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   View,
   PermissionsAndroid,
@@ -13,11 +13,14 @@ import {COLORS} from '../styles/Colors';
 import {HEIGHT, SCALE, WIDTH} from '../styles/Dimension';
 import CameraRoll from '@react-native-community/cameraroll';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {useIsFocused} from '@react-navigation/native';
 
 const Gallery = ({route, navigation}) => {
+  const isMounted = useRef(true);
   const [allImages, setImages] = useState(null);
   const [countImg, setCount] = useState(50);
   const [nextPage, setPage] = useState(false);
+  const isFocused = useIsFocused();
 
   const getPermissions = async () => {
     const readPermission = PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
@@ -41,6 +44,8 @@ const Gallery = ({route, navigation}) => {
       groupTypes: 'Album',
       groupName: 'Barcodes',
     }).then((res) => {
+      if (!isMounted.current) return null;
+
       setImages(res.edges);
       setPage(res.page_info.has_next_page);
     });
@@ -55,7 +60,6 @@ const Gallery = ({route, navigation}) => {
             onView: true,
             dataBarcode: [],
             dataImage: item.node.image.uri,
-            onDelete: getPhotos,
           });
         }}>
         <Image
@@ -116,10 +120,19 @@ const Gallery = ({route, navigation}) => {
   );
 
   useEffect(() => {
+    if (isFocused) {
+      if (route.params) {
+        if (route.params.onDelete) {
+          getPhotos();
+        }
+      }
+    }
     getPermissions();
     getPhotos();
-    return () => {};
-  }, []);
+    return () => {
+      isMounted.current = false;
+    };
+  }, [isFocused]);
 
   return (
     <View

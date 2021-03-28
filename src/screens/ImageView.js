@@ -18,8 +18,6 @@ import {
   FRAME_HEIGTH,
   SCAN_AREA_X,
   SCAN_AREA_Y,
-  SCAN_AREA_HEIGHT,
-  SCAN_AREA_WIDTH,
   WIDTH,
 } from '../styles/Dimension';
 import {COLORS} from '../styles/Colors';
@@ -31,7 +29,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import RNMlKit from 'react-native-firebase-mlkit';
 
 const ImageView = ({route, navigation}) => {
-  const {onView, dataBarcode, dataImage, onDelete} = route.params;
+  const {onView, dataBarcode, dataImage} = route.params;
   const [imageUri, setimageUri] = useState(null);
   const [textRecognized, setTextRecognized] = useState(null);
   const [isLoading, setLoading] = useState(false);
@@ -70,13 +68,13 @@ const ImageView = ({route, navigation}) => {
       const deviceTextRecognition = await RNMlKit.deviceTextRecognition(
         cropImageProcess,
       );
-      setTextRecognized(deviceTextRecognition[0].resultText);
       setimageUri(cropImageProcess);
       setLoading(false);
       setDisable(false);
+      setTextRecognized(deviceTextRecognition[0].resultText);
     } catch (e) {
+      setTextRecognized('None');
       setLoading(false);
-      console.log('e', e);
     }
   };
 
@@ -132,8 +130,9 @@ const ImageView = ({route, navigation}) => {
         ToastAndroid.SHORT,
         ToastAndroid.BOTTOM,
       );
-      navigation.goBack();
-      onDelete();
+      navigation.navigate('Gallery', {
+        onDelete: true,
+      });
     });
   };
 
