@@ -27,6 +27,7 @@ import CameraRoll from '@react-native-community/cameraroll';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import RNMlKit from 'react-native-firebase-mlkit';
+import base64 from 'react-native-base64';
 
 const ImageView = ({route, navigation}) => {
   const {onView, dataBarcode, dataImage} = route.params;
@@ -34,6 +35,8 @@ const ImageView = ({route, navigation}) => {
   const [textRecognized, setTextRecognized] = useState(null);
   const [isLoading, setLoading] = useState(false);
   const [disableAction, setDisable] = useState(true);
+  const [matchBarcode, setMatch] = useState(false);
+
   const crop_config = {
     offset: {
       x: SCAN_AREA_X * dataImage.width - SCALE(30),
@@ -72,6 +75,11 @@ const ImageView = ({route, navigation}) => {
       setLoading(false);
       setDisable(false);
       setTextRecognized(deviceTextRecognition[0].resultText);
+      if (
+        base64.encode(dataBarcode.data) === deviceTextRecognition[0].resultText
+      ) {
+        setMatch(true);
+      }
     } catch (e) {
       setTextRecognized('None');
       setLoading(false);
@@ -256,6 +264,30 @@ const ImageView = ({route, navigation}) => {
                 }}>
                 {dataBarcode.data}
               </Text>
+              <Text
+                style={{
+                  fontSize: SCALE(16),
+                  color: COLORS.grey,
+                  letterSpacing: 1,
+                  paddingTop: SCALE(20),
+                }}>
+                Data Matches :
+              </Text>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Ionicons
+                  name={matchBarcode ? 'checkmark-sharp' : 'close'}
+                  size={SCALE(16)}
+                  color={matchBarcode ? COLORS.green : COLORS.red}
+                />
+                <Text
+                  style={{
+                    fontSize: SCALE(18),
+                    color: matchBarcode ? COLORS.green : COLORS.red,
+                    letterSpacing: 1,
+                  }}>
+                  {matchBarcode ? `Passed` : `Failed`}
+                </Text>
+              </View>
               <Text
                 style={{
                   fontSize: SCALE(16),

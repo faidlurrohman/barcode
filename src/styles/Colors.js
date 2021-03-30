@@ -5,6 +5,8 @@ const COLORS = {
   white: '#ffffff',
   black: '#000000',
   gradient: ['#ffffff', 'rgba(255,255,255,0)'],
+  red: '#FF6666',
+  green: '#1BCD55',
 };
 
 export {COLORS};
