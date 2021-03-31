@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {
   Text,
   View,
-  Pressable,
+  TouchableOpacity,
   ActivityIndicator,
   StatusBar,
 } from 'react-native';
@@ -138,9 +138,11 @@ const Home = ({navigation}) => {
               }}>
               Place the code inside the frame
             </Text>
-            <Pressable
+            <TouchableOpacity
+              activeOpacity={0.5}
               onPress={() => navigation.navigate('Gallery')}
               style={{
+                borderRadius: SCALE(1000),
                 position: 'absolute',
                 bottom: SCALE(30),
                 left: SCALE(170),
@@ -151,10 +153,12 @@ const Home = ({navigation}) => {
                 size={SCALE(24)}
                 color={COLORS.white}
               />
-            </Pressable>
-            <Pressable
+            </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.5}
               onPress={() => setFlash((prev) => !prev)}
               style={{
+                borderRadius: SCALE(1000),
                 position: 'absolute',
                 top: SCALE(70),
                 left: SCALE(20),
@@ -165,10 +169,12 @@ const Home = ({navigation}) => {
                 size={SCALE(20)}
                 color={COLORS.white}
               />
-            </Pressable>
-            <Pressable
+            </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.5}
               onPress={() => navigation.navigate('Options')}
               style={{
+                borderRadius: SCALE(1000),
                 position: 'absolute',
                 top: SCALE(70),
                 right: SCALE(20),
@@ -179,7 +185,7 @@ const Home = ({navigation}) => {
                 size={SCALE(20)}
                 color={COLORS.white}
               />
-            </Pressable>
+            </TouchableOpacity>
           </>
         )}
       </RNCamera>

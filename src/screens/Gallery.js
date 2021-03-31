@@ -5,7 +5,7 @@ import {
   Platform,
   FlatList,
   Image,
-  Pressable,
+  TouchableOpacity,
   StatusBar,
   Text,
 } from 'react-native';
@@ -53,7 +53,8 @@ const Gallery = ({route, navigation}) => {
 
   const renderImages = useCallback(
     ({item, index, separators}) => (
-      <Pressable
+      <TouchableOpacity
+        activeOpacity={0.5}
         key={index}
         onPress={() => {
           navigation.navigate('ImageView', {
@@ -70,7 +71,7 @@ const Gallery = ({route, navigation}) => {
           }}
           source={{uri: item.node.image.uri}}
         />
-      </Pressable>
+      </TouchableOpacity>
     ),
     [],
   );
