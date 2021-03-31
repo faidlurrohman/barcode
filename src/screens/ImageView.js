@@ -39,12 +39,12 @@ const ImageView = ({route, navigation}) => {
 
   const crop_config = {
     offset: {
-      x: SCAN_AREA_X * dataImage.width - SCALE(30),
-      y: SCAN_AREA_Y * dataImage.height + SCALE(120),
+      x: SCAN_AREA_X,
+      y: SCAN_AREA_Y * dataImage.height,
     },
     size: {
-      width: FRAME_HEIGTH - SCALE(40),
-      height: FRAME_WIDTH - SCALE(55),
+      width: FRAME_WIDTH * dataImage.width,
+      height: FRAME_HEIGTH * dataImage.height,
     },
   };
 
