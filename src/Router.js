@@ -17,7 +17,7 @@ const toastConfig = {
     <BaseToast
       {...rest}
       style={{
-        height: HP('5%'),
+        height: HP('6%'),
         borderLeftColor: COLORS.gainsboro,
         backgroundColor: COLORS.gainsboro,
       }}
