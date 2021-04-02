@@ -38,8 +38,6 @@ const ImageView = ({route, navigation}) => {
   const [disableAction, setDisable] = useState(true);
   const [matchBarcode, setMatch] = useState(false);
 
-  console.log(`dataImage`, dataImage);
-
   const crop_config = {
     offset: {
       x: SCAN_AREA_X,
