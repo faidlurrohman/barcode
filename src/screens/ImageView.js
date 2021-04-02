@@ -13,7 +13,8 @@ import {
   Share,
 } from 'react-native';
 import {
-  SCALE,
+  HP,
+  WP,
   FRAME_WIDTH,
   FRAME_HEIGTH,
   SCAN_AREA_X,
@@ -150,7 +151,7 @@ const ImageView = ({route, navigation}) => {
         flex: 1,
         justifyContent: 'center',
         backgroundColor: COLORS.white,
-        paddingHorizontal: onView ? 0 : SCALE(20),
+        paddingHorizontal: onView ? 0 : WP('5%'),
       }}>
       <StatusBar
         translucent
@@ -158,91 +159,159 @@ const ImageView = ({route, navigation}) => {
         barStyle="dark-content"
       />
       {!onView ? (
-        <View style={{flex: 0}}>
-          <Text style={{fontSize: SCALE(28), letterSpacing: 1}}>Result</Text>
+        <View
+          style={{
+            flex: 0,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}>
+          <View
+            style={{
+              flex: 1,
+            }}>
+            <Text style={{fontSize: HP('3%'), letterSpacing: 1}}>Result</Text>
+          </View>
+          <View
+            style={{
+              flex: 0,
+              alignItems: 'center',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}>
+            <TouchableOpacity
+              disabled={disableAction}
+              activeOpacity={0.5}
+              onPress={shareMedia}
+              style={{paddingHorizontal: HP('0.5%')}}>
+              <Ionicons
+                name="ios-share-social-outline"
+                size={HP('3%')}
+                color={COLORS.black}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              disabled={disableAction}
+              activeOpacity={0.5}
+              onPress={copyText}
+              style={{paddingHorizontal: HP('0.5%')}}>
+              <Ionicons
+                name="ios-text-outline"
+                size={HP('3%')}
+                color={COLORS.black}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              disabled={disableAction}
+              activeOpacity={0.5}
+              onPress={saveImage}
+              style={{paddingHorizontal: HP('0.5%')}}>
+              <Ionicons
+                name="ios-save-outline"
+                size={HP('3%')}
+                color={COLORS.black}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       ) : null}
-      <View
-        style={{
-          flex: !onView ? 0 : 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          paddingVertical: !onView ? SCALE(20) : 0,
-        }}>
-        {isLoading ? (
-          <Skeleton>
-            <Skeleton.Item
-              width={FRAME_HEIGTH + SCALE(26)}
-              height={FRAME_WIDTH}
-              borderRadius={SCALE(5)}
-            />
-          </Skeleton>
-        ) : (
-          <Image
-            resizeMode="contain"
-            style={{
-              borderRadius: !onView ? SCALE(5) : 0,
-              width: !onView ? FRAME_HEIGTH + SCALE(26) : '100%',
-              height: !onView ? FRAME_WIDTH : '100%',
-            }}
-            source={{uri: imageUri}}
-          />
-        )}
-      </View>
       {!onView ? (
         <>
           {isLoading ? (
-            <View style={{flex: 1}}>
+            <ScrollView showsVerticalScrollIndicator={false}>
               <Skeleton>
+                <View
+                  style={{
+                    flex: 0,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    paddingVertical: HP('3%'),
+                  }}>
+                  <Skeleton.Item
+                    width={FRAME_HEIGTH}
+                    height={FRAME_WIDTH}
+                    borderRadius={HP('0.5%')}
+                  />
+                </View>
                 <Skeleton.Item
                   flex={0}
-                  width={WIDTH / 3}
-                  height={SCALE(16)}
-                  borderRadius={SCALE(2)}
-                  marginBottom={SCALE(4)}
+                  width={WP('40%')}
+                  height={HP('3%')}
+                  borderRadius={HP('0.5%')}
+                  marginBottom={HP('0.5%')}
                 />
                 <Skeleton.Item
                   flex={0}
-                  width={WIDTH / 1.5}
-                  height={SCALE(20)}
-                  borderRadius={SCALE(2)}
-                  marginBottom={SCALE(4)}
+                  width={WP('90%')}
+                  height={HP('3%')}
+                  borderRadius={HP('0.5%')}
+                  marginBottom={HP('0.5%')}
                 />
                 <Skeleton.Item
                   flex={0}
-                  width={WIDTH / 1.5}
-                  height={SCALE(20)}
-                  borderRadius={SCALE(2)}
-                  marginBottom={SCALE(20)}
+                  width={WP('90%')}
+                  height={HP('3%')}
+                  borderRadius={HP('0.5%')}
+                  marginBottom={HP('5%')}
                 />
                 <Skeleton.Item
                   flex={0}
-                  width={WIDTH / 3}
-                  height={SCALE(16)}
-                  borderRadius={SCALE(2)}
-                  marginBottom={SCALE(4)}
+                  width={WP('40%')}
+                  height={HP('3%')}
+                  borderRadius={HP('0.5%')}
+                  marginBottom={HP('0.5%')}
                 />
                 <Skeleton.Item
                   flex={0}
-                  width={WIDTH / 1.5}
-                  height={SCALE(20)}
-                  borderRadius={SCALE(2)}
-                  marginBottom={SCALE(4)}
+                  width={WP('90%')}
+                  height={HP('3%')}
+                  borderRadius={HP('0.5%')}
+                  marginBottom={HP('5%')}
                 />
                 <Skeleton.Item
                   flex={0}
-                  width={WIDTH / 1.5}
-                  height={SCALE(20)}
-                  borderRadius={SCALE(2)}
-                  marginBottom={SCALE(4)}
+                  width={WP('40%')}
+                  height={HP('3%')}
+                  borderRadius={HP('0.5%')}
+                  marginBottom={HP('0.5%')}
+                />
+                <Skeleton.Item
+                  flex={0}
+                  width={WP('90%')}
+                  height={HP('3%')}
+                  borderRadius={HP('0.5%')}
+                  marginBottom={HP('0.5%')}
+                />
+                <Skeleton.Item
+                  flex={0}
+                  width={WP('90%')}
+                  height={HP('3%')}
+                  borderRadius={HP('0.5%')}
+                  marginBottom={HP('0.5%')}
                 />
               </Skeleton>
-            </View>
+            </ScrollView>
           ) : (
-            <View style={{flex: 1}}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View
+                style={{
+                  flex: 0,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  paddingVertical: HP('3%'),
+                }}>
+                <Image
+                  resizeMode="contain"
+                  style={{
+                    borderRadius: HP('0.5%'),
+                    width: FRAME_HEIGTH,
+                    height: FRAME_WIDTH,
+                  }}
+                  source={{uri: imageUri}}
+                />
+              </View>
               <Text
                 style={{
-                  fontSize: SCALE(16),
+                  fontSize: HP('2%'),
                   color: COLORS.grey,
                   letterSpacing: 1,
                 }}>
@@ -250,7 +319,7 @@ const ImageView = ({route, navigation}) => {
               </Text>
               <Text
                 style={{
-                  fontSize: SCALE(18),
+                  fontSize: HP('2.5%'),
                   color: COLORS.black,
                   letterSpacing: 1,
                 }}>
@@ -258,7 +327,7 @@ const ImageView = ({route, navigation}) => {
               </Text>
               <Text
                 style={{
-                  fontSize: SCALE(18),
+                  fontSize: HP('2.5%'),
                   color: COLORS.black,
                   letterSpacing: 1,
                 }}>
@@ -266,22 +335,22 @@ const ImageView = ({route, navigation}) => {
               </Text>
               <Text
                 style={{
-                  fontSize: SCALE(16),
+                  fontSize: HP('2%'),
                   color: COLORS.grey,
                   letterSpacing: 1,
-                  paddingTop: SCALE(20),
+                  paddingTop: HP('3%'),
                 }}>
                 Data Matches :
               </Text>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Ionicons
                   name={matchBarcode ? 'checkmark-sharp' : 'close'}
-                  size={SCALE(16)}
+                  size={HP('2.5%')}
                   color={matchBarcode ? COLORS.green : COLORS.red}
                 />
                 <Text
                   style={{
-                    fontSize: SCALE(18),
+                    fontSize: HP('2.5%'),
                     color: matchBarcode ? COLORS.green : COLORS.red,
                     letterSpacing: 1,
                   }}>
@@ -290,116 +359,87 @@ const ImageView = ({route, navigation}) => {
               </View>
               <Text
                 style={{
-                  fontSize: SCALE(16),
+                  fontSize: HP('2%'),
                   color: COLORS.grey,
                   letterSpacing: 1,
-                  paddingTop: SCALE(20),
+                  paddingTop: HP('3%'),
                 }}>
                 Text Recognized :
               </Text>
-              <ScrollView showsVerticalScrollIndicator={false}>
-                <Text
-                  style={{
-                    fontSize: SCALE(18),
-                    color: COLORS.black,
-                    letterSpacing: 1,
-                    paddingBottom: SCALE(20),
-                  }}>
-                  {textRecognized}
-                </Text>
-              </ScrollView>
-            </View>
+              <Text
+                style={{
+                  fontSize: HP('2.5%'),
+                  color: COLORS.black,
+                  letterSpacing: 1,
+                  paddingBottom: HP('3%'),
+                }}>
+                {textRecognized}
+              </Text>
+            </ScrollView>
           )}
-          <TouchableOpacity
-            disabled={disableAction}
-            activeOpacity={0.5}
-            onPress={shareMedia}
-            style={{
-              position: 'absolute',
-              top: SCALE(-8),
-              right: SCALE(110),
-              padding: SCALE(10),
-            }}>
-            <Ionicons
-              name="ios-share-social-outline"
-              size={SCALE(24)}
-              color={COLORS.black}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            disabled={disableAction}
-            activeOpacity={0.5}
-            onPress={copyText}
-            style={{
-              position: 'absolute',
-              top: SCALE(-8),
-              right: SCALE(60),
-              padding: SCALE(10),
-            }}>
-            <Ionicons
-              name="ios-text-outline"
-              size={SCALE(24)}
-              color={COLORS.black}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            disabled={disableAction}
-            activeOpacity={0.5}
-            onPress={saveImage}
-            style={{
-              position: 'absolute',
-              top: SCALE(-8),
-              right: SCALE(10),
-              padding: SCALE(10),
-            }}>
-            <Ionicons
-              name="ios-save-outline"
-              size={SCALE(24)}
-              color={COLORS.black}
-            />
-          </TouchableOpacity>
         </>
       ) : (
-        <LinearGradient
-          start={{x: 0, y: 0}}
-          end={{x: 0, y: 1}}
-          colors={COLORS.gradient}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            paddingVertical: SCALE(5),
-            width: WIDTH,
-            height: WIDTH / 2,
-            alignItems: 'center',
-          }}>
-          <TouchableOpacity
-            activeOpacity={0.5}
-            onPress={() => navigation.goBack()}
+        <>
+          <View
             style={{
-              position: 'absolute',
-              top: SCALE(30),
-              left: SCALE(2),
-              padding: SCALE(10),
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
             }}>
-            <Ionicons name="arrow-back" size={SCALE(24)} color={COLORS.black} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.5}
-            onPress={deleteImage}
-            style={{
-              position: 'absolute',
-              top: SCALE(30),
-              right: SCALE(2),
-              padding: SCALE(10),
-            }}>
-            <Ionicons
-              name="ios-trash-outline"
-              size={SCALE(24)}
-              color={COLORS.black}
+            <Image
+              resizeMode="contain"
+              style={{
+                width: WP('100%'),
+                height: HP('100%'),
+              }}
+              source={{uri: imageUri}}
             />
-          </TouchableOpacity>
-        </LinearGradient>
+          </View>
+          <LinearGradient
+            start={{x: 0, y: 0}}
+            end={{x: 0, y: 1}}
+            colors={COLORS.gradient}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              paddingVertical: HP('0.5%'),
+              width: WIDTH,
+              height: WIDTH / 2,
+              alignItems: 'center',
+            }}>
+            <TouchableOpacity
+              activeOpacity={0.5}
+              onPress={() => navigation.goBack()}
+              style={{
+                position: 'absolute',
+                top: HP('7%'),
+                left: HP('1.3%'),
+                padding: HP('0.5%'),
+              }}>
+              <Ionicons
+                name="arrow-back"
+                size={HP('3.2%')}
+                color={COLORS.black}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.5}
+              onPress={deleteImage}
+              style={{
+                position: 'absolute',
+                top: HP('7%'),
+                right: HP('1.3%'),
+                padding: HP('0.5%'),
+              }}>
+              <Ionicons
+                name="ios-trash-outline"
+                size={HP('3%')}
+                color={COLORS.black}
+              />
+            </TouchableOpacity>
+          </LinearGradient>
+        </>
       )}
     </View>
   );

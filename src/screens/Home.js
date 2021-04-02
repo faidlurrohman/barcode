@@ -9,7 +9,7 @@ import {
 import BarcodeMask from 'react-native-barcode-mask';
 import {RNCamera} from 'react-native-camera';
 import {
-  SCALE,
+  HP,
   WIDTH,
   HEIGHT,
   FRAME_WIDTH,
@@ -114,7 +114,7 @@ const Home = ({navigation}) => {
             <ActivityIndicator
               style={{flex: 1, justifyContent: 'center'}}
               animating={true}
-              size={SCALE(40)}
+              size={HP('7%')}
               color={COLORS.white}
             />
           </>
@@ -126,15 +126,16 @@ const Home = ({navigation}) => {
               showAnimatedLine={false}
               outerMaskOpacity={0.5}
               edgeColor={COLORS.white}
-              edgeBorderWidth={SCALE(2)}
+              edgeBorderWidth={HP('0.3%')}
             />
             <Text
               style={{
                 position: 'absolute',
                 color: COLORS.white,
-                bottom: SCALE(170),
-                left: SCALE(105),
+                bottom: HP('25%'),
+                left: HP('13%'),
                 letterSpacing: 1,
+                fontSize: HP('2%'),
               }}>
               Place the code inside the frame
             </Text>
@@ -142,15 +143,15 @@ const Home = ({navigation}) => {
               activeOpacity={0.5}
               onPress={() => navigation.navigate('Gallery')}
               style={{
-                borderRadius: SCALE(1000),
+                borderRadius: HP('100%'),
                 position: 'absolute',
-                bottom: SCALE(30),
-                left: SCALE(170),
-                padding: SCALE(10),
+                bottom: HP('5%'),
+                left: HP('21.5%'),
+                padding: HP('2%'),
               }}>
               <Ionicons
                 name="ios-images-outline"
-                size={SCALE(24)}
+                size={HP('3.5%')}
                 color={COLORS.white}
               />
             </TouchableOpacity>
@@ -158,15 +159,15 @@ const Home = ({navigation}) => {
               activeOpacity={0.5}
               onPress={() => setFlash((prev) => !prev)}
               style={{
-                borderRadius: SCALE(1000),
+                borderRadius: HP('100%'),
                 position: 'absolute',
-                top: SCALE(70),
-                left: SCALE(20),
-                padding: SCALE(10),
+                top: HP('10%'),
+                left: HP('3%'),
+                padding: HP('2%'),
               }}>
               <Ionicons
                 name={flash ? 'ios-flash' : 'ios-flash-off'}
-                size={SCALE(20)}
+                size={HP('3.5%')}
                 color={COLORS.white}
               />
             </TouchableOpacity>
@@ -174,15 +175,15 @@ const Home = ({navigation}) => {
               activeOpacity={0.5}
               onPress={() => navigation.navigate('Options')}
               style={{
-                borderRadius: SCALE(1000),
+                borderRadius: HP('100%'),
                 position: 'absolute',
-                top: SCALE(70),
-                right: SCALE(20),
-                padding: SCALE(10),
+                top: HP('10%'),
+                right: HP('3%'),
+                padding: HP('2%'),
               }}>
               <Ionicons
                 name="ios-settings-outline"
-                size={SCALE(20)}
+                size={HP('3.5%')}
                 color={COLORS.white}
               />
             </TouchableOpacity>

@@ -10,7 +10,7 @@ import {
   Text,
 } from 'react-native';
 import {COLORS} from '../styles/Colors';
-import {HEIGHT, SCALE, WIDTH} from '../styles/Dimension';
+import {HEIGHT, HP, WP, WIDTH} from '../styles/Dimension';
 import CameraRoll from '@react-native-community/cameraroll';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useIsFocused} from '@react-navigation/native';
@@ -44,7 +44,8 @@ const Gallery = ({route, navigation}) => {
       groupTypes: 'Album',
       groupName: 'Barcodes',
     }).then((res) => {
-      if (!isMounted.current) return null;
+      console.log(`object`, isMounted.current);
+      // if (!isMounted.current) return null;
 
       setImages(res.edges);
       setPage(res.page_info.has_next_page);
@@ -65,7 +66,7 @@ const Gallery = ({route, navigation}) => {
         }}>
         <Image
           style={{
-            marginRight: SCALE(1),
+            marginRight: HP('0.1%'),
             width: WIDTH / 3.4,
             height: WIDTH / 3.4,
           }}
@@ -88,7 +89,7 @@ const Gallery = ({route, navigation}) => {
   const keyImages = useCallback((item, index) => index, []);
 
   const flatListSeparator = useCallback(
-    () => <View style={{height: SCALE(1)}} />,
+    () => <View style={{height: HP('0.1%')}} />,
     [],
   );
 
@@ -96,21 +97,21 @@ const Gallery = ({route, navigation}) => {
     () => (
       <View
         style={{
-          paddingVertical: SCALE(70),
+          paddingVertical: HP('10%'),
           justifyContent: 'center',
           alignItems: 'center',
         }}>
         <Ionicons
           name="ios-file-tray-outline"
-          size={SCALE(40)}
+          size={HP('3%')}
           color={COLORS.gainsboro}
         />
         <Text
           style={{
-            fontSize: SCALE(16),
+            fontSize: HP('2%'),
             letterSpacing: 1,
-            paddingBottom: SCALE(20),
-            paddingHorizontal: SCALE(20),
+            paddingBottom: WP('5%'),
+            paddingHorizontal: WP('5%'),
             color: COLORS.gainsboro,
           }}>
           No image
@@ -124,12 +125,15 @@ const Gallery = ({route, navigation}) => {
     if (isFocused) {
       if (route.params) {
         if (route.params.onDelete) {
+          console.log(`onDelete`, route.params.onDelete);
           getPhotos();
         }
       }
     }
-    getPermissions();
-    getPhotos();
+    if (isMounted.current) {
+      getPermissions();
+      getPhotos();
+    }
     return () => {
       isMounted.current = false;
     };
@@ -150,16 +154,16 @@ const Gallery = ({route, navigation}) => {
       <View style={{flex: 0}}>
         <Text
           style={{
-            fontSize: SCALE(28),
+            fontSize: HP('3%'),
             letterSpacing: 1,
-            paddingBottom: SCALE(20),
-            paddingHorizontal: SCALE(20),
+            paddingBottom: WP('5%'),
+            paddingHorizontal: WP('5%'),
           }}>
           Images
         </Text>
       </View>
       <FlatList
-        style={{paddingHorizontal: SCALE(20)}}
+        style={{paddingHorizontal: WP('5%')}}
         data={allImages}
         ListEmptyComponent={emptyView}
         renderItem={renderImages}
@@ -169,7 +173,7 @@ const Gallery = ({route, navigation}) => {
         ItemSeparatorComponent={flatListSeparator}
         windowSize={11}
         getItemLayout={getItemLayout}
-        onEndReachedThreshold={SCALE(20)}
+        onEndReachedThreshold={WP('5%')}
         onEndReached={getPhotos}
       />
     </View>
