@@ -14,6 +14,7 @@ import {HEIGHT, HP, WP, WIDTH} from '../styles/Dimension';
 import CameraRoll from '@react-native-community/cameraroll';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useIsFocused} from '@react-navigation/native';
+import Modal from 'react-native-modal';
 
 const Gallery = ({route, navigation}) => {
   const isMounted = useRef(true);
@@ -21,15 +22,34 @@ const Gallery = ({route, navigation}) => {
   const [countImg, setCount] = useState(50);
   const [nextPage, setPage] = useState(false);
   const isFocused = useIsFocused();
+  const [modalPermissions, setModalPermissions] = useState(false);
 
   const getPermissions = async () => {
     const readPermission = PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
     const hasPermission = await PermissionsAndroid.check(readPermission);
+    // console.log(`hasPermission`, hasPermission);
     if (hasPermission) {
       return true;
+    } else {
+      setModalPermissions(true);
     }
-    const status = await PermissionsAndroid.request(readPermission);
-    return status === 'granted';
+  };
+
+  const actionPermissions = async (_action) => {
+    if (_action) {
+      setModalPermissions(false);
+      const readPermission =
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
+      const status = await PermissionsAndroid.request(readPermission);
+      // console.log(`status`, status);
+      if (status === 'granted') {
+        getPhotos();
+      }
+      return status === 'granted';
+    } else {
+      setModalPermissions(false);
+      navigation.goBack();
+    }
   };
 
   const getPhotos = () => {
@@ -44,9 +64,8 @@ const Gallery = ({route, navigation}) => {
       groupTypes: 'Album',
       groupName: 'Barcodes',
     }).then((res) => {
-      console.log(`object`, isMounted.current);
+      // console.log(`object`, isMounted.current);
       // if (!isMounted.current) return null;
-
       setImages(res.edges);
       setPage(res.page_info.has_next_page);
     });
@@ -125,14 +144,15 @@ const Gallery = ({route, navigation}) => {
     if (isFocused) {
       if (route.params) {
         if (route.params.onDelete) {
-          console.log(`onDelete`, route.params.onDelete);
+          // console.log(`onDelete`, route.params.onDelete);
           getPhotos();
         }
       }
     }
     if (isMounted.current) {
-      getPermissions();
-      getPhotos();
+      if (getPermissions()) {
+        getPhotos();
+      }
     }
     return () => {
       isMounted.current = false;
@@ -176,6 +196,89 @@ const Gallery = ({route, navigation}) => {
         onEndReachedThreshold={WP('5%')}
         onEndReached={getPhotos}
       />
+      <Modal
+        backdropOpacity={0}
+        isVisible={modalPermissions}
+        onSwipeComplete={() => setModalPermissions(false)}
+        swipeDirection={['down']}
+        style={{
+          justifyContent: 'flex-end',
+          margin: 0,
+        }}>
+        <View
+          style={{
+            alignItems: 'center',
+            flexDirection: 'column',
+            paddingHorizontal: WP('3%'),
+            height: HP('25%'),
+            backgroundColor: COLORS.gainsboro,
+          }}>
+          <Ionicons
+            name="reorder-two-outline"
+            size={HP('3%')}
+            color={COLORS.black}
+          />
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'space-evenly',
+              alignItems: 'center',
+            }}>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontSize: HP('2.5%'),
+                fontFamily: 'MontserratSemibold',
+              }}>
+              Allow BarCodes to access photos, media and files on your device?
+            </Text>
+            <View
+              style={{
+                flex: 0,
+                flexDirection: 'row',
+              }}>
+              <TouchableOpacity
+                activeOpacity={0.5}
+                onPress={() => actionPermissions(false)}
+                style={{
+                  flex: 1,
+                  padding: WP('2%'),
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    fontSize: HP('2.5%'),
+                    fontFamily: 'MontserratSemibold',
+                  }}>
+                  No
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.5}
+                onPress={() => actionPermissions(true)}
+                style={{
+                  flex: 1,
+                  padding: WP('2%'),
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: COLORS.grey,
+                }}>
+                <Text
+                  style={{
+                    color: COLORS.gainsboro,
+                    textAlign: 'center',
+                    fontSize: HP('2.5%'),
+                    fontFamily: 'MontserratSemibold',
+                  }}>
+                  Yes
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

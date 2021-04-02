@@ -29,6 +29,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import RNMlKit from 'react-native-firebase-mlkit';
 import base64 from 'react-native-base64';
 import Toast from 'react-native-toast-message';
+import Modal from 'react-native-modal';
 
 const ImageView = ({route, navigation}) => {
   const {onView, dataBarcode, dataImage} = route.params;
@@ -37,6 +38,7 @@ const ImageView = ({route, navigation}) => {
   const [isLoading, setLoading] = useState(false);
   const [disableAction, setDisable] = useState(true);
   const [matchBarcode, setMatch] = useState(false);
+  const [modalPermissions, setModalPermissions] = useState(false);
 
   const crop_config = {
     offset: {
@@ -93,9 +95,21 @@ const ImageView = ({route, navigation}) => {
     const hasPermission = await PermissionsAndroid.check(writePermission);
     if (hasPermission) {
       return true;
+    } else {
+      return setModalPermissions(true);
     }
-    const status = await PermissionsAndroid.request(writePermission);
-    return status === 'granted';
+  };
+
+  const actionPermissions = async (_action) => {
+    if (_action) {
+      setModalPermissions(false);
+      const writePermission =
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
+      const status = await PermissionsAndroid.request(writePermission);
+      return status === 'granted';
+    } else {
+      setModalPermissions(false);
+    }
   };
 
   const copyText = () => {
@@ -113,19 +127,22 @@ const ImageView = ({route, navigation}) => {
   };
 
   const saveImage = () => {
-    if (Platform.OS === 'android' && !getPermissions()) {
-      return;
-    }
-    CameraRoll.save(imageUri, {album: 'Barcodes'}).then(() => {
-      Toast.show({
-        type: 'success',
-        position: 'bottom',
-        text1: 'Image saved',
-        visibilityTime: 2000,
-        autoHide: true,
-        bottomOffset: HP('3%'),
+    if (Platform.OS === 'android') {
+      getPermissions().then((res) => {
+        if (res) {
+          CameraRoll.save(imageUri, {album: 'Barcodes'}).then(() => {
+            Toast.show({
+              type: 'success',
+              position: 'bottom',
+              text1: 'Image saved',
+              visibilityTime: 2000,
+              autoHide: true,
+              bottomOffset: HP('3%'),
+            });
+          });
+        }
       });
-    });
+    }
   };
 
   const shareMedia = async () => {
@@ -453,6 +470,89 @@ const ImageView = ({route, navigation}) => {
           </LinearGradient>
         </>
       )}
+      <Modal
+        backdropOpacity={0}
+        isVisible={modalPermissions}
+        onSwipeComplete={() => setModalPermissions(false)}
+        swipeDirection={['down']}
+        style={{
+          justifyContent: 'flex-end',
+          margin: 0,
+        }}>
+        <View
+          style={{
+            alignItems: 'center',
+            flexDirection: 'column',
+            paddingHorizontal: WP('3%'),
+            height: HP('25%'),
+            backgroundColor: COLORS.gainsboro,
+          }}>
+          <Ionicons
+            name="reorder-two-outline"
+            size={HP('3%')}
+            color={COLORS.black}
+          />
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'space-evenly',
+              alignItems: 'center',
+            }}>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontSize: HP('2.5%'),
+                fontFamily: 'MontserratSemibold',
+              }}>
+              Allow BarCodes to access photos, media and files on your device?
+            </Text>
+            <View
+              style={{
+                flex: 0,
+                flexDirection: 'row',
+              }}>
+              <TouchableOpacity
+                activeOpacity={0.5}
+                onPress={() => actionPermissions(false)}
+                style={{
+                  flex: 1,
+                  padding: WP('2%'),
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    fontSize: HP('2.5%'),
+                    fontFamily: 'MontserratSemibold',
+                  }}>
+                  No
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.5}
+                onPress={() => actionPermissions(true)}
+                style={{
+                  flex: 1,
+                  padding: WP('2%'),
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: COLORS.grey,
+                }}>
+                <Text
+                  style={{
+                    color: COLORS.gainsboro,
+                    textAlign: 'center',
+                    fontSize: HP('2.5%'),
+                    fontFamily: 'MontserratSemibold',
+                  }}>
+                  Yes
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

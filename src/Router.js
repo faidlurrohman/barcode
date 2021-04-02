@@ -9,6 +9,7 @@ import Gallery from './screens/Gallery';
 import Options from './screens/Options';
 import {COLORS} from './styles/Colors';
 import {HP, WP} from './styles/Dimension';
+import {color} from 'react-native-reanimated';
 
 const DashboardStack = createStackNavigator();
 
@@ -29,6 +30,8 @@ const toastConfig = {
       }}
       text1={text1}
       text2={null}
+      onTrailingIconPress={() => Toast.hide()}
+      activeOpacity={0.5}
     />
   ),
   error: () => {},
