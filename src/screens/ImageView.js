@@ -4,7 +4,6 @@ import {
   Image,
   Text,
   View,
-  ToastAndroid,
   PermissionsAndroid,
   Platform,
   StatusBar,
@@ -29,6 +28,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import RNMlKit from 'react-native-firebase-mlkit';
 import base64 from 'react-native-base64';
+import Toast from 'react-native-toast-message';
 
 const ImageView = ({route, navigation}) => {
   const {onView, dataBarcode, dataImage} = route.params;
@@ -38,14 +38,16 @@ const ImageView = ({route, navigation}) => {
   const [disableAction, setDisable] = useState(true);
   const [matchBarcode, setMatch] = useState(false);
 
+  console.log(`dataImage`, dataImage);
+
   const crop_config = {
     offset: {
       x: SCAN_AREA_X,
-      y: SCAN_AREA_Y * dataImage.height,
+      y: SCAN_AREA_Y * dataImage.width,
     },
     size: {
-      width: FRAME_WIDTH * dataImage.width,
-      height: FRAME_HEIGTH * dataImage.height,
+      width: FRAME_WIDTH * dataImage.height,
+      height: FRAME_HEIGTH * dataImage.width,
     },
   };
 
@@ -102,11 +104,14 @@ const ImageView = ({route, navigation}) => {
     Clipboard.setString(
       `Types : ${dataBarcode.type}.\nData : ${dataBarcode.data}.\nText : ${textRecognized}`,
     );
-    ToastAndroid.showWithGravity(
-      'Text copied to clipboard',
-      ToastAndroid.SHORT,
-      ToastAndroid.BOTTOM,
-    );
+    Toast.show({
+      type: 'success',
+      position: 'bottom',
+      text1: 'Text copied to clipboard',
+      visibilityTime: 2000,
+      autoHide: true,
+      bottomOffset: HP('3%'),
+    });
   };
 
   const saveImage = () => {
@@ -114,11 +119,14 @@ const ImageView = ({route, navigation}) => {
       return;
     }
     CameraRoll.save(imageUri, {album: 'Barcodes'}).then(() => {
-      ToastAndroid.showWithGravity(
-        'Image saved',
-        ToastAndroid.SHORT,
-        ToastAndroid.BOTTOM,
-      );
+      Toast.show({
+        type: 'success',
+        position: 'bottom',
+        text1: 'Image saved',
+        visibilityTime: 2000,
+        autoHide: true,
+        bottomOffset: HP('3%'),
+      });
     });
   };
 
@@ -134,11 +142,14 @@ const ImageView = ({route, navigation}) => {
 
   const deleteImage = () => {
     CameraRoll.deletePhotos([imageUri]).then(() => {
-      ToastAndroid.showWithGravity(
-        'Image Deleted',
-        ToastAndroid.SHORT,
-        ToastAndroid.BOTTOM,
-      );
+      Toast.show({
+        type: 'success',
+        position: 'bottom',
+        text1: 'Image Deleted',
+        visibilityTime: 2000,
+        autoHide: true,
+        bottomOffset: HP('3%'),
+      });
       navigation.navigate('Gallery', {
         onDelete: true,
       });
@@ -169,7 +180,10 @@ const ImageView = ({route, navigation}) => {
             style={{
               flex: 1,
             }}>
-            <Text style={{fontSize: HP('3%'), letterSpacing: 1}}>Result</Text>
+            <Text
+              style={{fontSize: HP('3%'), fontFamily: 'MontserratSemibold'}}>
+              Result
+            </Text>
           </View>
           <View
             style={{
@@ -182,7 +196,7 @@ const ImageView = ({route, navigation}) => {
               disabled={disableAction}
               activeOpacity={0.5}
               onPress={shareMedia}
-              style={{paddingHorizontal: HP('0.5%')}}>
+              style={{paddingHorizontal: WP('2%')}}>
               <Ionicons
                 name="ios-share-social-outline"
                 size={HP('3%')}
@@ -193,7 +207,7 @@ const ImageView = ({route, navigation}) => {
               disabled={disableAction}
               activeOpacity={0.5}
               onPress={copyText}
-              style={{paddingHorizontal: HP('0.5%')}}>
+              style={{paddingHorizontal: WP('2%')}}>
               <Ionicons
                 name="ios-text-outline"
                 size={HP('3%')}
@@ -204,7 +218,7 @@ const ImageView = ({route, navigation}) => {
               disabled={disableAction}
               activeOpacity={0.5}
               onPress={saveImage}
-              style={{paddingHorizontal: HP('0.5%')}}>
+              style={{paddingHorizontal: WP('2%')}}>
               <Ionicons
                 name="ios-save-outline"
                 size={HP('3%')}
@@ -313,15 +327,15 @@ const ImageView = ({route, navigation}) => {
                 style={{
                   fontSize: HP('2%'),
                   color: COLORS.grey,
-                  letterSpacing: 1,
+                  fontFamily: 'MontserratSemibold',
                 }}>
-                Barcode details :
+                Barcode Details :
               </Text>
               <Text
                 style={{
                   fontSize: HP('2.5%'),
                   color: COLORS.black,
-                  letterSpacing: 1,
+                  fontFamily: 'MontserratMedium',
                 }}>
                 {dataBarcode.type}
               </Text>
@@ -329,7 +343,7 @@ const ImageView = ({route, navigation}) => {
                 style={{
                   fontSize: HP('2.5%'),
                   color: COLORS.black,
-                  letterSpacing: 1,
+                  fontFamily: 'MontserratMedium',
                 }}>
                 {dataBarcode.data}
               </Text>
@@ -337,7 +351,7 @@ const ImageView = ({route, navigation}) => {
                 style={{
                   fontSize: HP('2%'),
                   color: COLORS.grey,
-                  letterSpacing: 1,
+                  fontFamily: 'MontserratSemibold',
                   paddingTop: HP('3%'),
                 }}>
                 Data Matches :
@@ -352,7 +366,7 @@ const ImageView = ({route, navigation}) => {
                   style={{
                     fontSize: HP('2.5%'),
                     color: matchBarcode ? COLORS.green : COLORS.red,
-                    letterSpacing: 1,
+                    fontFamily: 'MontserratMedium',
                   }}>
                   {matchBarcode ? `Passed` : `Failed`}
                 </Text>
@@ -361,7 +375,7 @@ const ImageView = ({route, navigation}) => {
                 style={{
                   fontSize: HP('2%'),
                   color: COLORS.grey,
-                  letterSpacing: 1,
+                  fontFamily: 'MontserratSemibold',
                   paddingTop: HP('3%'),
                 }}>
                 Text Recognized :
@@ -370,7 +384,7 @@ const ImageView = ({route, navigation}) => {
                 style={{
                   fontSize: HP('2.5%'),
                   color: COLORS.black,
-                  letterSpacing: 1,
+                  fontFamily: 'MontserratMedium',
                   paddingBottom: HP('3%'),
                 }}>
                 {textRecognized}
@@ -413,7 +427,7 @@ const ImageView = ({route, navigation}) => {
               onPress={() => navigation.goBack()}
               style={{
                 position: 'absolute',
-                top: HP('7%'),
+                top: HP('5%'),
                 left: HP('1.3%'),
                 padding: HP('0.5%'),
               }}>
@@ -428,7 +442,7 @@ const ImageView = ({route, navigation}) => {
               onPress={deleteImage}
               style={{
                 position: 'absolute',
-                top: HP('7%'),
+                top: HP('5%'),
                 right: HP('1.3%'),
                 padding: HP('0.5%'),
               }}>

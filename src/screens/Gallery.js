@@ -109,7 +109,7 @@ const Gallery = ({route, navigation}) => {
         <Text
           style={{
             fontSize: HP('2%'),
-            letterSpacing: 1,
+            fontFamily: 'MontserratSemibold',
             paddingBottom: WP('5%'),
             paddingHorizontal: WP('5%'),
             color: COLORS.gainsboro,
@@ -155,7 +155,7 @@ const Gallery = ({route, navigation}) => {
         <Text
           style={{
             fontSize: HP('3%'),
-            letterSpacing: 1,
+            fontFamily: 'MontserratSemibold',
             paddingBottom: WP('5%'),
             paddingHorizontal: WP('5%'),
           }}>

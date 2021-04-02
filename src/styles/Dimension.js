@@ -13,16 +13,13 @@ const HP = (_percent) => {
 
 const WIDTH = WP('100%');
 const HEIGHT = HP('100%');
+const IMAGE_WIDTH = 1440;
+const IMAGE_HEIGHT = 2160;
 
-// const LEFT_MARGIN = SCALE(210);
-// const TOP_MARGIN = SCALE(35);
-// const FRAME_WIDTH = SCALE(400);
-// const FRAME_HEIGTH = SCALE(320);
-
-const LEFT_MARGIN = HP('15%');
-const TOP_MARGIN = HP('5%');
+const LEFT_MARGIN = WP('23%');
+const TOP_MARGIN = HP('8%');
 const FRAME_WIDTH = HP('50%');
-const FRAME_HEIGTH = HP('40%');
+const FRAME_HEIGTH = WP('80%');
 
 const SCAN_AREA_X = LEFT_MARGIN / HEIGHT;
 const SCAN_AREA_Y = TOP_MARGIN / WIDTH;
@@ -40,4 +37,6 @@ export {
   SCAN_AREA_Y,
   SCAN_AREA_WIDTH,
   SCAN_AREA_HEIGHT,
+  IMAGE_HEIGHT,
+  IMAGE_WIDTH,
 };

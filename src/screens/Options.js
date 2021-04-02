@@ -53,7 +53,11 @@ const Options = ({route, navigation}) => {
         barStyle="dark-content"
       />
       <View style={{flex: 0}}>
-        <Text style={{fontSize: HP('3%'), letterSpacing: 1}}>
+        <Text
+          style={{
+            fontSize: HP('3%'),
+            fontFamily: 'MontserratSemibold',
+          }}>
           BarCodes Types
         </Text>
       </View>
@@ -71,7 +75,7 @@ const Options = ({route, navigation}) => {
               style={{
                 fontSize: HP('2%'),
                 color: COLORS.grey,
-                letterSpacing: 1,
+                fontFamily: 'MontserratRegular',
               }}>
               {item.name}
             </Text>

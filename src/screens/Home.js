@@ -18,6 +18,9 @@ import {
   SCAN_AREA_Y,
   SCAN_AREA_HEIGHT,
   SCAN_AREA_WIDTH,
+  WP,
+  IMAGE_HEIGHT,
+  IMAGE_WIDTH,
 } from '../styles/Dimension';
 import {useIsFocused} from '@react-navigation/core';
 import {COLORS} from '../styles/Colors';
@@ -36,7 +39,11 @@ const Home = ({navigation}) => {
       setLoading(true);
       if (camera) {
         try {
-          const optionsImage = {base64: true};
+          const optionsImage = {
+            base64: true,
+            width: IMAGE_WIDTH,
+            height: IMAGE_HEIGHT,
+          };
           const captureImage = await camera.takePictureAsync(optionsImage);
           navigation.navigate('ImageView', {
             onView: false,
@@ -132,10 +139,11 @@ const Home = ({navigation}) => {
               style={{
                 position: 'absolute',
                 color: COLORS.white,
-                bottom: HP('25%'),
-                left: HP('13%'),
-                letterSpacing: 1,
-                fontSize: HP('2%'),
+                bottom: HP('22%'),
+                left: WP('27%'),
+                // letterSpacing: 1,
+                fontSize: HP('1.8%'),
+                fontFamily: 'MontserratRegular',
               }}>
               Place the code inside the frame
             </Text>
@@ -146,7 +154,7 @@ const Home = ({navigation}) => {
                 borderRadius: HP('100%'),
                 position: 'absolute',
                 bottom: HP('5%'),
-                left: HP('21.5%'),
+                left: WP('42%'),
                 padding: HP('2%'),
               }}>
               <Ionicons
